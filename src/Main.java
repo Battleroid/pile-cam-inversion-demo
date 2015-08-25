@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-		// init with custom dimension, or use default dimension
+		// init with VGA resolution (640x480)
         Webcam cam = Webcam.getDefault();
         cam.setViewSize(WebcamResolution.VGA.getSize());
 
@@ -21,10 +21,11 @@ public class Main {
         BufferedImage sample = cam.getImage();
         cam.close();
 
-        // change from ARGB to RGB
+        // save color photo
         ImageIO.write(sample, "PNG", new File("sample.png"));
 
-        // convert to grayscale, create empty BI that is the same size of original, then draw image to new BI
+        /* convert to grayscale, create empty BI that is the same size of original but of Gray type,
+        use color conversion to convert color image to gray image. */
         BufferedImage gray = new BufferedImage(sample.getWidth(null), sample.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
         ColorConvertOp op = new ColorConvertOp(sample.getColorModel().getColorSpace(), gray.getColorModel().getColorSpace(), null);
         op.filter(sample, gray);
@@ -33,7 +34,7 @@ public class Main {
         // create empty BufferedImage for writing with same dimensions of the gray image
         BufferedImage manipulated = new BufferedImage(gray.getWidth(null), gray.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
 
-        // invert?
+        // go through row/cols and invert values
         for (int row = 0; row < gray.getWidth(); row++) {
             for (int col = 0; col < gray.getHeight(); col++) {
                 // get ARGB values
@@ -47,7 +48,7 @@ public class Main {
                         255 - argb[3]
                 };
 
-                // convert back and write to image a x, y coordinates
+                // convert back to color value then write to inverted image
                 int invertedCol = toColor(inverted);
                 manipulated.setRGB(row, col, invertedCol);
             }
@@ -56,10 +57,13 @@ public class Main {
         // save inverted image
         ImageIO.write(manipulated, "PNG", new File("inverted.png"));
 
+        // create our list of images to add to the pile
         BufferedImage[] images = new BufferedImage[] {
                 gray,
                 manipulated
         };
+
+        // explicitly create a 2x2 grid with our list of images, while maintaining aspect ratio
         Pile p = new Pile(2, 2, images, true);
 
         // save pile
