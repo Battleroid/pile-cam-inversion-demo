@@ -3,9 +3,10 @@ import java.awt.image.BufferedImage;
 import java.awt.image.ColorConvertOp;
 import java.io.File;
 import java.io.IOException;
-
 import com.caseyweed.Pile;
 import com.github.sarxos.webcam.Webcam;
+import com.github.sarxos.webcam.WebcamResolution;
+
 import javax.imageio.ImageIO;
 
 public class Main {
@@ -13,10 +14,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 		// init with custom dimension, or use default dimension
         Webcam cam = Webcam.getDefault();
-        cam.setCustomViewSizes(new Dimension[] {
-                new Dimension(400, 400)
-        });
-        cam.setViewSize(new Dimension(400, 400));
+        cam.setViewSize(WebcamResolution.VGA.getSize());
 
         // take photo then save
         cam.open();
@@ -31,12 +29,6 @@ public class Main {
         ColorConvertOp op = new ColorConvertOp(sample.getColorModel().getColorSpace(), gray.getColorModel().getColorSpace(), null);
         op.filter(sample, gray);
         ImageIO.write(gray, "PNG", new File("sample_gray.png"));
-
-        // create pile object
-        Pile p = new Pile(400, 2, 2);
-
-        // add before image, which is the grayscale version
-        p.addImage(gray);
 
         // create empty BufferedImage for writing with same dimensions of the gray image
         BufferedImage manipulated = new BufferedImage(gray.getWidth(null), gray.getHeight(null), BufferedImage.TYPE_BYTE_GRAY);
@@ -64,9 +56,11 @@ public class Main {
         // save inverted image
         ImageIO.write(manipulated, "PNG", new File("inverted.png"));
 
-        // add inverted to pile
-        p.addImage(manipulated);
-        p.updateGraphics();
+        BufferedImage[] images = new BufferedImage[] {
+                gray,
+                manipulated
+        };
+        Pile p = new Pile(2, 2, images, true);
 
         // save pile
         p.savePile("pile_comparison.png");
