@@ -11,7 +11,7 @@ import javax.imageio.ImageIO;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-	    // init with custom dimension, or use default dimension
+		// init with custom dimension, or use default dimension
         Webcam cam = Webcam.getDefault();
         cam.setCustomViewSizes(new Dimension[] {
                 new Dimension(400, 400)
