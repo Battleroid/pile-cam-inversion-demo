@@ -12,7 +12,7 @@ import javax.imageio.ImageIO;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-		// init with VGA resolution (640x480)
+	// init with VGA resolution (640x480)
         Webcam cam = Webcam.getDefault();
         cam.setViewSize(WebcamResolution.VGA.getSize());
 
@@ -71,7 +71,7 @@ public class Main {
     }
 
     /**
-     * Convert from 24 bit integer to individual ARGB values based on offsets.
+     * Convert from 32 bit integer to individual ARGB values based on offsets.
      * @param argb
      * @return int[] in order of ARGB
      */
@@ -84,7 +84,7 @@ public class Main {
     }
 
     /**
-     * Convert int[] with ARGB values back to 24 bit integer for setting BufferedImage pixels
+     * Convert int[] with ARGB values back to 32 bit integer for setting BufferedImage pixels
      * @param rgb
      * @return
      */
